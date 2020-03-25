@@ -1,7 +1,14 @@
 libasyncd
 =========
 
+
+__This fork of libasyncd has been modified to work with macOS. It will not generate .so files and it does not have any OpenSSL support.__
+
+---
+
 Embeddable Event-based Asynchronous Message/HTTP Server library for C/C++.
+
+
 
 ## What is libasyncd?
 
@@ -36,8 +43,11 @@ $ git clone https://github.com/wolkykim/libasyncd
 $ cd libasyncd
 $ ./configure
 # If using system wide install of qlibc, add QLIBC=system to make install command
+# Add DESTDIR=build to install in separate build directory
 $ make install
 ```
+
+**Note**: you will need to also move the generated libraries and headers from `lib/qlibc` to your build directory if you are on macOS. Otherwise, you can run `make install-lib`.
 
 ## API Reference
 

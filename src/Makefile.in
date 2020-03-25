@@ -78,15 +78,19 @@ endif
 $(LIBNAME): $(OBJS)
 	$(AR) $(ARFLAGS) $(LIBNAME) $(OBJS)
 	$(RANLIB) $(LIBNAME)
-	$(CC) -shared -Wl,-soname,$(SLIBNAME) -o $(SLIBNAME) $(OBJS)
-	$(LN_S) -f $(SLIBNAME) $(SLIBNAME_LINK)
+	# $(CC) -shared -Wl,-soname,$(SLIBNAME) -o $(SLIBNAME) $(OBJS)
+	# $(LN_S) -f $(SLIBNAME) $(SLIBNAME_LINK)
 
 qlibc:
 	@if [ ! -d $(QLIBC_DIR)/src ]; then \
 	        ../lib/run2init-submodules.sh; \
 	fi
 	@if [ ! -f $(QLIBC_LIB) ]; then \
-	        (cd $(QLIBC_DIR) && ./configure && make); \
+		if [ $(shell uname) == "Darwin" ]; then \
+			(cd $(QLIBC_DIR) && cmake . && make); \
+		else \
+			(cd $(QLIBC_DIR) && ./configure && make); \
+		fi \
 	fi
 
 install: install-libasyncd
@@ -98,14 +102,14 @@ install-libasyncd: all
 	$(INSTALL_DATA) $(HEADERDIR)/ad_http_handler.h $(DESTDIR)/$(INST_INCDIR)/asyncd/ad_http_handler.h
 	$(MKDIR_P) $(DESTDIR)/$(INST_LIBDIR)
 	$(INSTALL_DATA) $(LIBNAME) $(DESTDIR)/$(INST_LIBDIR)/$(LIBNAME)
-	$(INSTALL_DATA) $(SLIBNAME) $(DESTDIR)/$(INST_LIBDIR)/$(SLIBNAME)
-	( cd $(DESTDIR)/$(INST_LIBDIR); $(LN_S) -f $(SLIBNAME) $(SLIBNAME_LINK) )
+	# $(INSTALL_DATA) $(SLIBNAME) $(DESTDIR)/$(INST_LIBDIR)/$(SLIBNAME)
+	# ( cd $(DESTDIR)/$(INST_LIBDIR); $(LN_S) -f $(SLIBNAME) $(SLIBNAME_LINK) )
 
 uninstall-libasyncd:
 	$(RM) -rf $(DESTDIR)/$(INST_INCDIR)/asyncd
 	$(RM) -f $(DESTDIR)/$(INST_LIBDIR)/$(LIBNAME)
-	$(RM) -f $(DESTDIR)/$(INST_LIBDIR)/$(SLIBNAME)
-	$(RM) -f $(DESTDIR)/$(INST_LIBDIR)/$(SLIBNAME_LINK)
+	# $(RM) -f $(DESTDIR)/$(INST_LIBDIR)/$(SLIBNAME)
+	# $(RM) -f $(DESTDIR)/$(INST_LIBDIR)/$(SLIBNAME_LINK)
 
 deinstall: uninstall
 uninstall: uninstall-libasyncd

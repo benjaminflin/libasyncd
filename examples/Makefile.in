@@ -47,7 +47,12 @@ LIBS            += ../src/libasyncd.a
 
 ## qlibc related.
 CPPFLAGS        += -I../lib/qlibc/include
+ifeq ($(shell uname), Darwin)
+LIBS            += ../lib/qlibc/lib/libqlibc-static.a
+endif
+ifeq ($(shell uname), Linux)
 LIBS            += ../lib/qlibc/lib/libqlibc.a
+endif
 
 ## Which compiler & options for release
 CC		= gcc -std=gnu99
@@ -57,7 +62,7 @@ CPPFLAGS	+=  -I/usr/include -I/usr/local/include \
 LIBS		+= @DEPLIBS@
 
 
-TARGETS		= helloworld_tcp_server helloworld_http_server helloworld_ssl_server \
+TARGETS		= helloworld_tcp_server helloworld_http_server \
 		  echo_tcp_server echo_http_server
 
 ## Make Library
@@ -69,8 +74,8 @@ helloworld_tcp_server: helloworld_tcp_server.o
 helloworld_http_server: helloworld_http_server.o
 	$(CC) $(LDFLAGS) -o $@ helloworld_http_server.o $(LIBS) 
 
-helloworld_ssl_server: helloworld_ssl_server.o
-	$(CC) $(LDFLAGS) -o $@ helloworld_ssl_server.o $(LIBS) 
+# helloworld_ssl_server: helloworld_ssl_server.o
+# 	$(CC) $(LDFLAGS) -o $@ helloworld_ssl_server.o $(LIBS) 
 
 echo_tcp_server: echo_tcp_server.o
 	$(CC) $(LDFLAGS) -o $@ echo_tcp_server.o $(LIBS) 

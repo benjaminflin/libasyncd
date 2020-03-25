@@ -120,7 +120,7 @@ AC_HEADER_STDC
 AC_HEADER_STDBOOL
 AC_HEADER_DIRENT
 AC_CHECK_HEADER([inttypes.h])
-AC_CHECK_HEADER([openssl/ssl.h])
+# AC_CHECK_HEADER([openssl/ssl.h])
 AC_CHECK_HEADER([event2/event.h])
 
 ## Checks for typedefs, structures, and compiler characteristics.
@@ -148,14 +148,14 @@ AC_SUBST(DEPLIBS, ["$DEPLIBS -levent"])
 AC_CHECK_LIB([event_pthreads], [main], [], AC_MSG_ERROR([Cannot find libevent_pthreads library.]))
 AC_SUBST(DEPLIBS, ["$DEPLIBS -levent_pthreads"])
 
-AC_CHECK_LIB([event_openssl], [main], [], AC_MSG_ERROR([Cannot find libevent_openssl library.]))
-AC_SUBST(DEPLIBS, ["$DEPLIBS -levent_openssl"])
+# AC_CHECK_LIB([event_openssl], [main], [], AC_MSG_ERROR([Cannot find libevent_openssl library.]))
+# AC_SUBST(DEPLIBS, ["$DEPLIBS -levent_openssl"])
 
-AC_CHECK_LIB([ssl], [main], [], AC_MSG_ERROR([Cannot find openssl library.]))
-AC_SUBST(DEPLIBS, ["$DEPLIBS -lssl"])
+# AC_CHECK_LIB([ssl], [main], [], AC_MSG_ERROR([Cannot find openssl library.]))
+# AC_SUBST(DEPLIBS, ["$DEPLIBS -lssl"])
 
-AC_CHECK_LIB([crypto], [main], [], AC_MSG_ERROR([Cannot find crypto library.]))
-AC_SUBST(DEPLIBS, ["$DEPLIBS -lcrypto"])
+# AC_CHECK_LIB([crypto], [main], [], AC_MSG_ERROR([Cannot find crypto library.]))
+# AC_SUBST(DEPLIBS, ["$DEPLIBS -lcrypto"])
 
 ##
 ## --enable section

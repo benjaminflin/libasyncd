@@ -38,7 +38,7 @@
 #include <event2/event.h>
 #include <event2/buffer.h>
 #include <event2/bufferevent.h>
-// #include <openssl/ssl.h>
+#include <openssl/ssl.h>
 #include "qlibc/qlibc.h"
 
 #ifdef __cplusplus
@@ -150,7 +150,7 @@ extern "C"
         qlist_t *hooks;                  /*!< list of registered hooks */
         struct evconnlistener *listener; /*!< listener */
         struct event_base *evbase;       /*!< event base */
-        // SSL_CTX *sslctx;                /*!< SSL connection support */
+        SSL_CTX *sslctx;                 /*!< SSL connection support */
 
         struct bufferevent *notify_buffer; /*!< internal notification channel */
     };
@@ -185,9 +185,9 @@ extern "C"
     extern void ad_server_set_option(ad_server_t *server, const char *key, const char *value);
     extern char *ad_server_get_option(ad_server_t *server, const char *key);
     extern int ad_server_get_option_int(ad_server_t *server, const char *key);
-    // extern SSL_CTX *ad_server_ssl_ctx_create_simple(const char *cert_path, const char *pkey_path);
-    // extern void ad_server_set_ssl_ctx(ad_server_t *server, SSL_CTX *sslctx);
-    // extern SSL_CTX *ad_server_get_ssl_ctx(ad_server_t *server);
+    extern SSL_CTX *ad_server_ssl_ctx_create_simple(const char *cert_path, const char *pkey_path);
+    extern void ad_server_set_ssl_ctx(ad_server_t *server, SSL_CTX *sslctx);
+    extern SSL_CTX *ad_server_get_ssl_ctx(ad_server_t *server);
     extern qhashtbl_t *ad_server_get_stats(ad_server_t *server, const char *key);
 
     extern void ad_server_register_hook(ad_server_t *server, ad_callback cb, void *userdata);

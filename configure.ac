@@ -81,11 +81,11 @@ AC_CONFIG_FILES([Makefile src/Makefile examples/Makefile])
 AC_SUBST(DEPLIBS, [""])
 
 ## Set path
-PATH="$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
-CPPFLAGS="$CPPFLAGS -I/usr/include -I/usr/local/include"
+PATH="$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/local/opt/openssl/bin"
+CPPFLAGS="$CPPFLAGS -I/usr/include -I/usr/local/include -I/usr/local/opt/openssl/include"
 CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
 CPPFLAGS="$CPPFLAGS -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
-LDFLAGS="$LDFLAGS -L/usr/lib -L/usr/local/lib"
+LDFLAGS="$LDFLAGS -L/usr/lib -L/usr/local/lib -L/usr/local/opt/openssl/lib"
 
 ## Set autoconf setting
 #AC_CANONICAL_TARGET
@@ -148,14 +148,14 @@ AC_SUBST(DEPLIBS, ["$DEPLIBS -levent"])
 AC_CHECK_LIB([event_pthreads], [main], [], AC_MSG_ERROR([Cannot find libevent_pthreads library.]))
 AC_SUBST(DEPLIBS, ["$DEPLIBS -levent_pthreads"])
 
-# AC_CHECK_LIB([event_openssl], [main], [], AC_MSG_ERROR([Cannot find libevent_openssl library.]))
-# AC_SUBST(DEPLIBS, ["$DEPLIBS -levent_openssl"])
+AC_CHECK_LIB([event_openssl], [main], [], AC_MSG_ERROR([Cannot find libevent_openssl library.]))
+AC_SUBST(DEPLIBS, ["$DEPLIBS -levent_openssl"])
 
-# AC_CHECK_LIB([ssl], [main], [], AC_MSG_ERROR([Cannot find openssl library.]))
-# AC_SUBST(DEPLIBS, ["$DEPLIBS -lssl"])
+AC_CHECK_LIB([ssl], [main], [], AC_MSG_ERROR([Cannot find openssl library.]))
+AC_SUBST(DEPLIBS, ["$DEPLIBS -lssl"])
 
-# AC_CHECK_LIB([crypto], [main], [], AC_MSG_ERROR([Cannot find crypto library.]))
-# AC_SUBST(DEPLIBS, ["$DEPLIBS -lcrypto"])
+AC_CHECK_LIB([crypto], [main], [], AC_MSG_ERROR([Cannot find crypto library.]))
+AC_SUBST(DEPLIBS, ["$DEPLIBS -lcrypto"])
 
 ##
 ## --enable section

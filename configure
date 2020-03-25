@@ -2290,11 +2290,11 @@ DEPLIBS=""
 
 
 ## Set path
-PATH="$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
-CPPFLAGS="$CPPFLAGS -I/usr/include -I/usr/local/include"
+PATH="$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/local/opt/openssl/bin"
+CPPFLAGS="$CPPFLAGS -I/usr/include -I/usr/local/include -I/usr/local/opt/openssl/include"
 CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
 CPPFLAGS="$CPPFLAGS -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
-LDFLAGS="$LDFLAGS -L/usr/lib -L/usr/local/lib"
+LDFLAGS="$LDFLAGS -L/usr/lib -L/usr/local/lib -L/usr/local/opt/openssl/lib"
 
 ## Set autoconf setting
 #AC_CANONICAL_TARGET
@@ -4676,14 +4676,137 @@ fi
 DEPLIBS="$DEPLIBS -levent_pthreads"
 
 
-# AC_CHECK_LIB([event_openssl], [main], [], AC_MSG_ERROR([Cannot find libevent_openssl library.]))
-# AC_SUBST(DEPLIBS, ["$DEPLIBS -levent_openssl"])
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -levent_openssl" >&5
+$as_echo_n "checking for main in -levent_openssl... " >&6; }
+if ${ac_cv_lib_event_openssl_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-levent_openssl  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
 
-# AC_CHECK_LIB([ssl], [main], [], AC_MSG_ERROR([Cannot find openssl library.]))
-# AC_SUBST(DEPLIBS, ["$DEPLIBS -lssl"])
 
-# AC_CHECK_LIB([crypto], [main], [], AC_MSG_ERROR([Cannot find crypto library.]))
-# AC_SUBST(DEPLIBS, ["$DEPLIBS -lcrypto"])
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_event_openssl_main=yes
+else
+  ac_cv_lib_event_openssl_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_event_openssl_main" >&5
+$as_echo "$ac_cv_lib_event_openssl_main" >&6; }
+if test "x$ac_cv_lib_event_openssl_main" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBEVENT_OPENSSL 1
+_ACEOF
+
+  LIBS="-levent_openssl $LIBS"
+
+else
+  as_fn_error $? "Cannot find libevent_openssl library." "$LINENO" 5
+fi
+
+DEPLIBS="$DEPLIBS -levent_openssl"
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lssl" >&5
+$as_echo_n "checking for main in -lssl... " >&6; }
+if ${ac_cv_lib_ssl_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lssl  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_ssl_main=yes
+else
+  ac_cv_lib_ssl_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_main" >&5
+$as_echo "$ac_cv_lib_ssl_main" >&6; }
+if test "x$ac_cv_lib_ssl_main" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSSL 1
+_ACEOF
+
+  LIBS="-lssl $LIBS"
+
+else
+  as_fn_error $? "Cannot find openssl library." "$LINENO" 5
+fi
+
+DEPLIBS="$DEPLIBS -lssl"
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lcrypto" >&5
+$as_echo_n "checking for main in -lcrypto... " >&6; }
+if ${ac_cv_lib_crypto_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcrypto  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_crypto_main=yes
+else
+  ac_cv_lib_crypto_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_main" >&5
+$as_echo "$ac_cv_lib_crypto_main" >&6; }
+if test "x$ac_cv_lib_crypto_main" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBCRYPTO 1
+_ACEOF
+
+  LIBS="-lcrypto $LIBS"
+
+else
+  as_fn_error $? "Cannot find crypto library." "$LINENO" 5
+fi
+
+DEPLIBS="$DEPLIBS -lcrypto"
+
 
 ##
 ## --enable section

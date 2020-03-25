@@ -43,14 +43,14 @@
 #include <sys/socket.h>
 #include <event2/event.h>
 #include <event2/bufferevent.h>
-// #include <event2/bufferevent_ssl.h>
+#include <event2/bufferevent_ssl.h>
 #include <event2/thread.h>
 #include <event2/listener.h>
-// #include <openssl/ssl.h>
-// #include <openssl/rand.h>
-// #include <openssl/conf.h>
-// #include <openssl/engine.h>
-// #include <openssl/err.h>
+#include <openssl/ssl.h>
+#include <openssl/rand.h>
+#include <openssl/conf.h>
+#include <openssl/engine.h>
+#include <openssl/err.h>
 #include "macro.h"
 #include "qlibc/qlibc.h"
 #include "ad_server.h"
@@ -82,7 +82,7 @@ static void *server_loop(void *instance);
 static void close_server(ad_server_t *server);
 static void libevent_log_cb(int severity, const char *msg);
 static int set_undefined_options(ad_server_t *server);
-// static SSL_CTX *init_ssl(const char *cert_path, const char *pkey_path);
+static SSL_CTX *init_ssl(const char *cert_path, const char *pkey_path);
 static void listener_cb(struct evconnlistener *listener,
                         evutil_socket_t evsocket, struct sockaddr *sockaddr,
                         int socklen, void *userdata);
@@ -227,19 +227,19 @@ int ad_server_start(ad_server_t *server)
     }
 
     // SSL
-    // if (!server->sslctx && ad_server_get_option_int(server, "server.enable_ssl"))
-    // {
-    //     char *cert_path = ad_server_get_option(server, "server.ssl_cert");
-    //     char *pkey_path = ad_server_get_option(server, "server.ssl_pkey");
-    //     server->sslctx = init_ssl(cert_path, pkey_path);
-    //     if (server->sslctx == NULL)
-    //     {
-    //         ERROR("Couldn't load certificate file(%s) or private key file(%s).",
-    //               cert_path, pkey_path);
-    //         return -1;
-    //     }
-    //     DEBUG("SSL Initialized.");
-    // }
+    if (!server->sslctx && ad_server_get_option_int(server, "server.enable_ssl"))
+    {
+        char *cert_path = ad_server_get_option(server, "server.ssl_cert");
+        char *pkey_path = ad_server_get_option(server, "server.ssl_pkey");
+        server->sslctx = init_ssl(cert_path, pkey_path);
+        if (server->sslctx == NULL)
+        {
+            ERROR("Couldn't load certificate file(%s) or private key file(%s).",
+                  cert_path, pkey_path);
+            return -1;
+        }
+        DEBUG("SSL Initialized.");
+    }
 
     // Bind
     if (!server->evbase)
@@ -393,12 +393,12 @@ void ad_server_global_free(void)
     //libevent_global_shutdown(); // From libevent v2.1
 
     // OpenSSL related.
-    // ENGINE_cleanup();
-    // CONF_modules_free();
-    // ERR_free_strings();
-    // EVP_cleanup();
-    // CRYPTO_cleanup_all_ex_data();
-    // sk_SSL_COMP_free(SSL_COMP_get_compression_methods());
+    ENGINE_cleanup();
+    CONF_modules_free();
+    ERR_free_strings();
+    EVP_cleanup();
+    CRYPTO_cleanup_all_ex_data();
+    sk_SSL_COMP_free(SSL_COMP_get_compression_methods());
 }
 
 /**
@@ -443,23 +443,23 @@ int ad_server_get_option_int(ad_server_t *server, const char *key)
  * 
  * @see ad_server_set_ssl_ctx()
  */
-// SSL_CTX *ad_server_ssl_ctx_create_simple(const char *cert_path,
-//                                          const char *pkey_path)
-// {
+SSL_CTX *ad_server_ssl_ctx_create_simple(const char *cert_path,
+                                         const char *pkey_path)
+{
 
-//     SSL_CTX *sslctx = SSL_CTX_new(SSLv23_server_method());
-//     if (!SSL_CTX_use_certificate_chain_file(sslctx, cert_path) ||
-//         !SSL_CTX_use_PrivateKey_file(sslctx, pkey_path, SSL_FILETYPE_PEM))
-//     {
+    SSL_CTX *sslctx = SSL_CTX_new(SSLv23_server_method());
+    if (!SSL_CTX_use_certificate_chain_file(sslctx, cert_path) ||
+        !SSL_CTX_use_PrivateKey_file(sslctx, pkey_path, SSL_FILETYPE_PEM))
+    {
 
-//         ERROR("Couldn't load certificate file(%s) or private key file(%s).",
-//               cert_path, pkey_path);
+        ERROR("Couldn't load certificate file(%s) or private key file(%s).",
+              cert_path, pkey_path);
 
-//         return NULL;
-//     }
+        return NULL;
+    }
 
-//     return sslctx;
-// }
+    return sslctx;
+}
 
 /**
  * Attach OpenSSL SSL_CTX to the server.
@@ -475,16 +475,16 @@ int ad_server_get_option_int(ad_server_t *server, const char *key)
  * 
  * @see ad_server_ssl_ctx_create_simple()
  */
-// void ad_server_set_ssl_ctx(ad_server_t *server, SSL_CTX *sslctx)
-// {
+void ad_server_set_ssl_ctx(ad_server_t *server, SSL_CTX *sslctx)
+{
 
-//     if (server->sslctx)
-//     {
-//         SSL_CTX_free(server->sslctx);
-//     }
+    if (server->sslctx)
+    {
+        SSL_CTX_free(server->sslctx);
+    }
 
-//     server->sslctx = sslctx;
-// }
+    server->sslctx = sslctx;
+}
 
 /**
  * Get OpenSSL SSL_CTX object.
@@ -497,10 +497,10 @@ int ad_server_get_option_int(ad_server_t *server, const char *key)
  * while server is running as it may cause unpredictable results.
  * However, it is safe to use it for reading SSL statistics.
  */
-// SSL_CTX *ad_server_get_ssl_ctx(ad_server_t *server)
-// {
-//     return server->sslctx;
-// }
+SSL_CTX *ad_server_get_ssl_ctx(ad_server_t *server)
+{
+    return server->sslctx;
+}
 
 /**
  * Return internal statistic counter map.
@@ -709,16 +709,16 @@ static int set_undefined_options(ad_server_t *server)
     return newentries;
 }
 
-// static SSL_CTX *init_ssl(const char *cert_path, const char *pkey_path)
-// {
-//     SSL_CTX *sslctx = SSL_CTX_new(SSLv23_server_method());
-//     if (!SSL_CTX_use_certificate_file(sslctx, cert_path, SSL_FILETYPE_PEM) ||
-//         !SSL_CTX_use_PrivateKey_file(sslctx, pkey_path, SSL_FILETYPE_PEM))
-//     {
-//         return NULL;
-//     }
-//     return sslctx;
-// }
+static SSL_CTX *init_ssl(const char *cert_path, const char *pkey_path)
+{
+    SSL_CTX *sslctx = SSL_CTX_new(SSLv23_server_method());
+    if (!SSL_CTX_use_certificate_file(sslctx, cert_path, SSL_FILETYPE_PEM) ||
+        !SSL_CTX_use_PrivateKey_file(sslctx, pkey_path, SSL_FILETYPE_PEM))
+    {
+        return NULL;
+    }
+    return sslctx;
+}
 
 static void listener_cb(struct evconnlistener *listener, evutil_socket_t socket,
                         struct sockaddr *sockaddr, int socklen, void *userdata)
@@ -728,17 +728,17 @@ static void listener_cb(struct evconnlistener *listener, evutil_socket_t socket,
 
     // Create a new buffer.
     struct bufferevent *buffer = NULL;
-    // if (server->sslctx)
-    // {
-    //     buffer = bufferevent_openssl_socket_new(server->evbase, socket,
-    //                                             SSL_new(server->sslctx),
-    //                                             BUFFEREVENT_SSL_ACCEPTING,
-    //                                             BEV_OPT_CLOSE_ON_FREE);
-    // }
-    // else
-    // {
-    buffer = bufferevent_socket_new(server->evbase, socket, BEV_OPT_CLOSE_ON_FREE);
-    // }
+    if (server->sslctx)
+    {
+        buffer = bufferevent_openssl_socket_new(server->evbase, socket,
+                                                SSL_new(server->sslctx),
+                                                BUFFEREVENT_SSL_ACCEPTING,
+                                                BEV_OPT_CLOSE_ON_FREE);
+    }
+    else
+    {
+        buffer = bufferevent_socket_new(server->evbase, socket, BEV_OPT_CLOSE_ON_FREE);
+    }
     if (buffer == NULL)
         goto error;
 
@@ -836,16 +836,16 @@ static void conn_free(ad_conn_t *conn)
         conn_reset(conn);
         if (conn->buffer)
         {
-            // if (conn->server->sslctx)
-            // {
-            //     int sslerr = bufferevent_get_openssl_error(conn->buffer);
-            //     if (sslerr)
-            //     {
-            //         char errmsg[256];
-            //         ERR_error_string_n(sslerr, errmsg, sizeof(errmsg));
-            //         ERROR("SSL %s (err:%d)", errmsg, sslerr);
-            //     }
-            // }
+            if (conn->server->sslctx)
+            {
+                int sslerr = bufferevent_get_openssl_error(conn->buffer);
+                if (sslerr)
+                {
+                    char errmsg[256];
+                    ERR_error_string_n(sslerr, errmsg, sizeof(errmsg));
+                    ERROR("SSL %s (err:%d)", errmsg, sslerr);
+                }
+            }
             bufferevent_free(conn->buffer);
         }
         free(conn);

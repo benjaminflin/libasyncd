@@ -26,24 +26,21 @@
 ## POSSIBILITY OF SUCH DAMAGE.
 ################################################################################
 
-prefix		= @prefix@
-exec_prefix	= @exec_prefix@
+prefix		= /usr/local
+exec_prefix	= ${prefix}
 
 ## Utilities
-AR		= @AR@
+AR		= /usr/bin/ar
 ARFLAGS		= -rc
-CHMOD		= @CHMOD@
-INSTALL		= @INSTALL@
-INSTALL_DATA	= @INSTALL_DATA@
-LN_S		= @LN_S@
-MKDIR_P		= @MKDIR_P@
+CHMOD		= /bin/chmod
+INSTALL		= /usr/bin/install -c
+INSTALL_DATA	= ${INSTALL} -m 644
+LN_S		= ln -s
+MKDIR_P		= .././install-sh -c -d
 RMDIR		= rmdir
-RANLIB		= @RANLIB@
-RM		= @RM@
-
-# Library paths
-LDFLAGS = @LDFLAGS@
-
+RANLIB		= ranlib
+RM		= /bin/rm
+LDFLAGS =  -L/usr/lib -L/usr/local/lib -L/usr/local/opt/openssl/lib
 ## libasyncd related.
 CPPFLAGS        += -I../include -I../src
 LIBS            += ../src/libasyncd.a
@@ -62,10 +59,10 @@ CC		= gcc -std=gnu99
 CFLAGS		= -Wall -Wstrict-prototypes -fPIC -g -O2
 CPPFLAGS	+=  -I/usr/include -I/usr/local/include -I/usr/local/opt/openssl/include \
 		   -D_GNU_SOURCE -DBUILD_DEBUG 
-LIBS		+= @DEPLIBS@
+LIBS		+=  -lpthread -levent -levent_pthreads -levent_openssl -lssl -lcrypto
 
 
-TARGETS		= helloworld_tcp_server helloworld_http_server helloworld_ssl_server \
+TARGETS		= helloworld_tcp_server helloworld_http_server \
 		  echo_tcp_server echo_http_server
 
 ## Make Library

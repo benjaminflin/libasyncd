@@ -2,7 +2,7 @@ libasyncd
 =========
 
 
-__This fork of libasyncd has been modified to work with macOS. It will not generate .so files and it does not have any OpenSSL support.__
+__This fork of libasyncd has been modified to work with macOS. It will not generate .so files.__
 
 
 ## Latency/Connection Test
@@ -10,11 +10,31 @@ __This fork of libasyncd has been modified to work with macOS. It will not gener
 Both tests were done using [wrk](https://github.com/wg/wrk) and the following command:
 
 ```bash
-wrk -t12 -c400 -d30s http://127.0.0.1:8888/
+wrk -t12 -c400 -d30s http://127.0.0.1:<port>/
 ```
 
 libasyncd
 ---
+```
+Running 30s test @ http://127.0.0.1:8888/
+  12 threads and 15 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   301.54us   85.33us   5.13ms   94.56%
+    Req/Sec     3.29k   372.33     3.74k    92.64%
+  1183208 requests in 30.10s, 111.71MB read
+Requests/sec:  39309.42
+Transfer/sec:      3.71MB
+```
+```
+Running 30s test @ http://127.0.0.1:8888/
+  12 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.33ms  459.03us  10.60ms   93.48%
+    Req/Sec     3.46k   349.56     3.73k    92.50%
+  1238945 requests in 30.02s, 116.97MB read
+Requests/sec:  41270.89
+Transfer/sec:      3.90MB
+```
 ```
 Running 30s test @ http://127.0.0.1:8888/
   12 threads and 400 connections
@@ -31,6 +51,26 @@ node
 ---
 ```
 Running 30s test @ http://127.0.0.1:3000/
+  12 threads and 15 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   644.56us  261.65us  12.70ms   86.62%
+    Req/Sec     1.56k   415.33    12.91k    81.20%
+  559381 requests in 30.10s, 73.09MB read
+Requests/sec:  18585.51
+Transfer/sec:      2.43MB
+```
+```
+Running 30s test @ http://127.0.0.1:3000/
+  12 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     4.80ms  377.82us  15.57ms   93.89%
+    Req/Sec     1.67k    62.17     1.92k    73.47%
+  599909 requests in 30.03s, 78.38MB read
+Requests/sec:  19979.71
+Transfer/sec:      2.61MB
+```
+```
+Running 30s test @ http://127.0.0.1:3000/
   12 threads and 400 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
     Latency    12.61ms    1.93ms  83.16ms   86.75%
@@ -45,6 +85,26 @@ nginx
 ---
 ```
 Running 30s test @ http://127.0.0.1:8080/
+  12 threads and 15 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   744.87us    3.94ms  88.12ms   98.34%
+    Req/Sec     3.11k   371.17     3.48k    93.97%
+  1113190 requests in 30.01s, 196.35MB read
+Requests/sec:  37095.38
+Transfer/sec:      6.54MB
+```
+```
+Running 30s test @ http://127.0.0.1:8080/
+  12 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.30ms    6.09ms 113.54ms   97.90%
+    Req/Sec     3.09k   396.96     3.56k    92.14%
+  1107419 requests in 30.02s, 195.33MB read
+Requests/sec:  36890.41
+Transfer/sec:      6.51MB
+```
+```
+Running 30s test @ http://127.0.0.1:8080/
   12 threads and 400 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
     Latency     8.14ms   11.95ms 165.84ms   96.85%
@@ -54,6 +114,8 @@ Running 30s test @ http://127.0.0.1:8080/
 Requests/sec:  36047.71
 Transfer/sec:      6.36MB
 ```
+
+
 
 
 

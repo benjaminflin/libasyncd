@@ -4,6 +4,60 @@ libasyncd
 
 __This fork of libasyncd has been modified to work with macOS. It will not generate .so files and it does not have any OpenSSL support.__
 
+
+## Latency/Connection Test
+
+Both tests were done using [wrk](https://github.com/wg/wrk) and the following command:
+
+```bash
+wrk -t12 -c400 -d30s http://127.0.0.1:8888/
+```
+
+libasyncd
+---
+```
+Running 30s test @ http://127.0.0.1:8888/
+  12 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     5.37ms  391.47us   8.73ms   84.72%
+    Req/Sec     3.75k     2.41k   12.76k    62.86%
+  1344996 requests in 30.10s, 126.99MB read
+  Socket errors: connect 155, read 84, write 0, timeout 0
+Requests/sec:  44691.50
+Transfer/sec:      4.22MB
+```
+
+node
+---
+```
+Running 30s test @ http://127.0.0.1:3000/
+  12 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    12.61ms    1.93ms  83.16ms   86.75%
+    Req/Sec     1.72k     1.03k    3.12k    59.03%
+  566150 requests in 30.07s, 73.97MB read
+  Socket errors: connect 155, read 164, write 0, timeout 0
+Requests/sec:  18828.07
+Transfer/sec:      2.46MB
+```
+
+nginx
+---
+```
+Running 30s test @ http://127.0.0.1:8080/
+  12 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     8.14ms   11.95ms 165.84ms   96.85%
+    Req/Sec     3.31k     1.65k    5.73k    60.30%
+  1084926 requests in 30.10s, 191.36MB read
+  Socket errors: connect 155, read 89, write 0, timeout 0
+Requests/sec:  36047.71
+Transfer/sec:      6.36MB
+```
+
+
+
+
 ---
 
 Embeddable Event-based Asynchronous Message/HTTP Server library for C/C++.
